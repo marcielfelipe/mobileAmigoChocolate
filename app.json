@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "mobileAmigoChocolate",
+    "name": "Amigo Chocolate",
     "slug": "mobileAmigoChocolate",
     "platforms": [
       "ios",
@@ -13,7 +13,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#0076BF"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
