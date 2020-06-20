@@ -9,7 +9,6 @@ export default StyleSheet.create ({
         paddingHorizontal:24,
         paddingTop: Constants.statusBarHeight + 20
     },
-
     header:{
         flexDirection:'row',
         justifyContent:'space-between',
@@ -32,12 +31,9 @@ export default StyleSheet.create ({
     name:{
         fontWeight:'200'
     },
-
     groupList:{
         marginTop:30
     },
-    
-
     group:{
         padding:15,
         borderRadius:5,

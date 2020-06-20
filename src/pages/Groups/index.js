@@ -16,7 +16,7 @@ export default function Groups(){
     return(
         <View style={styles.container}>
             <View style={styles.header}>
-                <Image source={logoImg}/>
+                <Image source={logoImg} />
                 <Text style={styles.headerText}>
                     Total de <Text style={styles.headerTextBold}>0 grupos</Text>
                 </Text>
