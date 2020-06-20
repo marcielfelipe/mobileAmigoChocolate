@@ -3,6 +3,10 @@ import Constants from 'expo-constants';
 
 
 export default StyleSheet.create ({
+    geral:{
+        backgroundColor:'#0076BF',
+        flex:1,
+    },
     container:{
         backgroundColor:'#0076BF',
         flex:1,
@@ -62,5 +66,21 @@ export default StyleSheet.create ({
         marginBottom:12,
         color:'#737380'
     },
+    menuBar:{
+        height:60,
+        marginTop:12,
+
+        backgroundColor:'#002740',
+
+    },
+    iconsMenu:{
+        flexDirection:'row',
+        justifyContent:'space-between',
+        marginLeft:35,
+        marginRight:35,
+        marginTop:15
+    },
+
+    
 });
 
