@@ -1,7 +1,7 @@
 import React, {useState}from 'react';
 import DatePicker from 'react-native-datepicker';
 import {FontAwesome} from '@expo/vector-icons';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation,useRoute} from '@react-navigation/native';
 import {TextInput,View,Image,Text,TouchableOpacity,AsyncStorage} from 'react-native';
 
 import api from '../../services/api';
@@ -9,18 +9,21 @@ import api from '../../services/api';
 import logoImg from '../../assets/logo.png';
 import styles from './styles';
 
-export default function NewGroup(){
+export default function EditGroup(){
     const navigation = useNavigation();
-
-    const [nome,setNome] = useState('');
-    const [dataSorteio,setDataSorteio] = useState('');
-    const [dataEvento,setDataEvento] = useState('');
-    const [valorMinimo,setValorMinimo] = useState('');
-    const [valorMaximo,setValorMaximo] = useState('');
-
+    const route=useRoute();
+    const group=route.params.group;
+    const [_id,set_id] = useState(group._id);
+    const [nome,setNome] = useState(group.nome);
+    const [dataSorteio,setDataSorteio] = useState(group.dataSorteio);
+    const [dataEvento,setDataEvento] = useState(group.dataEvento);
+    const [valorMinimo,setValorMinimo] = useState(group.valorMinimo);
+    const [valorMaximo,setValorMaximo] = useState(group.valorMaximo);
+    console.log(group.valorMaximo);
     const [token,setToken]=useState('');
 
     const data={
+        _id,
         nome,
         dataSorteio,
         dataEvento,
@@ -35,23 +38,15 @@ export default function NewGroup(){
     const auth = { headers: {Authorization: `Bearer ${token}`}};
 
     //#region  menu
-    function navigateToGroups(){
-        navigation.navigate('Groups');
+    function navigateToGroupDetail(){
+        navigation.navigate('GroupDetail');
     }
-    function navigateToMyProfyle(){
-        navigation.navigate('MyProfile');
-    }
-    function navigateToNewGroup(){
-        navigation.navigate('NewGroup');
-    }
-    function navigateToLogin(){
-        navigation.navigate('Login');
-    }
+
     //#endregion
 
-    async function handleCreate(){
-        const response = await api.post('grupo',data,auth);
-        set
+    async function handleEdit(){
+        const response = await api.put('grupo',data,auth);
+        navigation.navigate('Groups');
     }
 
 
@@ -65,7 +60,7 @@ export default function NewGroup(){
                     
                 </View>
                 <Text style={styles.headerText}>
-                        Cadastrar novo sorteio
+                        Editar sorteio {group.nome}
                     </Text>
 
                 <View style={styles.form}>
@@ -104,8 +99,8 @@ export default function NewGroup(){
                             mode="date"
                             placeholder="Data do evento"
                             format="DD/MM/YYYY"
-                            minDate={dataSorteio}
-                            maxDate="01-06-2050"
+                            minDate="1900-01-01"
+                            maxDate="2050-06-01"
                             confirmBtnText="Ok"
                             cancelBtnText="Cancelar"
                             date={dataEvento}
@@ -127,46 +122,32 @@ export default function NewGroup(){
                             keyboardType='numeric'
                             style={styles.inputGroup}
                             placeholder='Valor mínimo'
-                            value={valorMinimo}
+                            value={String(valorMinimo)}
                             onChangeText={(text)=>setValorMinimo(text)}
                         ></TextInput>
                         <TextInput
                             keyboardType='numeric'
                             style={styles.inputGroup}
                             placeholder='Valor máximo'
-                            value={valorMaximo}
+                            value={String(valorMaximo)}
                             onChangeText={(text)=>setValorMaximo(text)}
                         >
                         </TextInput>
                     </View>
 
-                    <TouchableOpacity style={styles.button} onPress={handleCreate}>
+                    <TouchableOpacity style={styles.button} onPress={handleEdit}>
                         <Text style={styles.textButton}>
-                            Cadastrar
+                            Salvar
                         </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.button2} onPress={navigateToGroupDetail}>
+                        <Text style={styles.textButton2}>Cancelar</Text>
                     </TouchableOpacity>
                     
 
                 </View>
 
 
-            </View>
-
-            <View style={styles.menuBar}>
-                <View style={styles.iconsMenu}>
-                <TouchableOpacity onPress={navigateToGroups}>
-                        <FontAwesome name="home" size={35} color="#fff"/>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={navigateToLogin}>
-                        <FontAwesome name="sign-out" size={35} color="#fff"/>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={navigateToMyProfyle}>
-                        <FontAwesome name="user-circle" size={35} color="#fff"/>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={navigateToNewGroup}>
-                        <FontAwesome name="plus-circle" size={35} color="#fff"/>
-                    </TouchableOpacity>
-                </View>
             </View>
 
         </View>

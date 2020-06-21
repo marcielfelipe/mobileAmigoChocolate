@@ -17,6 +17,10 @@ export default function GroupDetail(){
     function navigateToGroups(){
         navigation.navigate('Groups');
     }
+    function navigateToEditGroup(group){
+        navigation.navigate('EditGroup',{group});
+    }
+
     //#endregion
 
     const navigation = useNavigation();
@@ -82,7 +86,7 @@ export default function GroupDetail(){
                     <Text style={styles.property}>Faixa de preço:</Text>
                     <Text style={styles.value}>{group.valorMinimo} --{group.valorMaximo}</Text>
 
-                    <TouchableOpacity onPress={navigateToGroups}>
+                    <TouchableOpacity onPress={()=>navigateToEditGroup(group)}>
                         <FontAwesome style={styles.iconAction}name="edit" size={30} color="#002740"/>
                     </TouchableOpacity>
 
