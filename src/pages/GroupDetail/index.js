@@ -1,21 +1,40 @@
-import React from 'react';
+import React,{useState,useEffect} from 'react';
 import {FontAwesome} from '@expo/vector-icons';
-import {useNavigation} from '@react-navigation/native';
-import {ScrollView,View, FlatList,Image,Text,TouchableOpacity,SafeAreaView} from 'react-native';
+import {useNavigation,useRoute} from '@react-navigation/native';
+import {ScrollView,View, FlatList,Image,Text,TouchableOpacity,SafeAreaView,AsyncStorage} from 'react-native';
 import { YellowBox } from 'react-native'
+
 
 import logoImg from '../../assets/logo.png';
 import styles from './styles';
 
 export default function GroupDetail(){
+    //#region 
     YellowBox.ignoreWarnings([
         'VirtualizedLists should never be nested', // TODO: Remove when fixed
     ])
-    const navigation = useNavigation();
 
     function navigateToGroups(){
         navigation.navigate('Groups');
     }
+    //#endregion
+
+    const navigation = useNavigation();
+    const route=useRoute();
+    const [token,setToken]=useState('');
+    const group = route.params.group;
+    const [idGroup,setIdGroup] = useState('');
+
+    getStorage();
+    async function getStorage(){
+        const id=await AsyncStorage.getItem('idGroup');
+        const t= await AsyncStorage.getItem('token');
+        setToken(t);
+        setIdGroup(id);
+    }
+
+
+
 
     return(
         <SafeAreaView style={styles.container}> 
@@ -40,7 +59,7 @@ export default function GroupDetail(){
                     </View>
                     
                     <Text style={styles.property}>Status:</Text>
-                    <Text style={styles.value}>Em aberto</Text>
+                    <Text style={styles.value}>{group.status}</Text>
 
                     <TouchableOpacity onPress={navigateToGroups}>
                         <FontAwesome style={styles.iconAction}name="random" size={30} color="#002740"/>
@@ -51,19 +70,17 @@ export default function GroupDetail(){
 
                 <View style={styles.card}>
                     <View style={styles.headerCard}>
-                        <Text style={styles.headerCardText}>Nome do Grupo</Text>
+                        <Text style={styles.headerCardText}>{group.nome}</Text>
                     </View>
 
                     <Text style={styles.property}>Criado por:</Text>
-                    <Text style={styles.value}>Admin</Text>
+                    <Text style={styles.value}>{group.criadoPor}</Text>
                     <Text style={styles.property}>Data do sorteio:</Text>
-                    <Text style={styles.value}>31/12/2020</Text>
+                    <Text style={styles.value}>{group.dataSorteio}</Text>
                     <Text style={styles.property}>Data do evento:</Text>
-                    <Text style={styles.value}>31/12/2020</Text>
+                    <Text style={styles.value}>{group.dataEvento}</Text>
                     <Text style={styles.property}>Faixa de preço:</Text>
-                    <Text style={styles.value}>R$10,00 --R$20,00</Text>
-                    <Text style={styles.property}>Status:</Text>
-                    <Text style={styles.value}>Em aberto</Text> 
+                    <Text style={styles.value}>{group.valorMinimo} --{group.valorMaximo}</Text>
 
                     <TouchableOpacity onPress={navigateToGroups}>
                         <FontAwesome style={styles.iconAction}name="edit" size={30} color="#002740"/>
@@ -79,16 +96,16 @@ export default function GroupDetail(){
 
                     <FlatList
                         style={styles.participantList}
-                        data={[1,2,3,4,5]}
-                        keyExtractor={participant=>String(participant)}
+                        data={group.participantes}
+                        keyExtractor={participant=>String(participant._id)}
                         showsVerticalScrollIndicator={false}
-                        renderItem={()=>(
+                        renderItem={({item:participant})=>(
                             <TouchableOpacity 
                                 style={styles.oneParticipant}
                                 onPress={()=>{}}
                             >
                                 <FontAwesome name="user" size={25} color="#002740"/>
-                                <Text style={styles.oneParticipantText}>Nome do Participante</Text>
+                                <Text style={styles.oneParticipantText}>{participant.nome}</Text>
                             </TouchableOpacity>
                         )}
                     />

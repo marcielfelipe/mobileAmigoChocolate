@@ -52,7 +52,7 @@ export default function NewGroup(){
 
     async function handleCreate(){
         const response = await api.post('grupo',data,auth);
-        console.log(response.data);
+        set
     }
 
 

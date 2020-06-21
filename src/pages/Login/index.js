@@ -18,7 +18,7 @@ export default function Login(){
         navigation.navigate('Register');
     }
     function navigateToGroups(){
-        navigation.navigate('Groups');
+        navigation.navigate('Groups',);
     }
     async function handleLogin(){
         const data={

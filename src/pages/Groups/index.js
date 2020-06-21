@@ -10,7 +10,6 @@ export default function Groups(){
     const [groups,setGroups]=useState([]);
     const [token,setToken]=useState('');
     const [nome,setNome]=useState('');
-    const [refresh,setRefresh]=useState(false);
 
     const navigation = useNavigation();
 
@@ -19,12 +18,9 @@ export default function Groups(){
         const n= await AsyncStorage.getItem('nome');
         setNome(n);
         setToken(t);
+        return t;
     }
     const auth = { headers: {Authorization: `Bearer ${token}`}};
-    
-    function navigateToDetail(){
-        navigation.navigate('GroupDetail');
-    }
     function navigateToGroups(){
         navigation.navigate('Groups');
     }
@@ -48,15 +44,15 @@ export default function Groups(){
     }
     async function handleDeleteGroup(id){
         const response = await api.delete('grupo/'+id,auth);
-        console.log(response.data);
-        setRefresh(!refresh);
     }
-
+    async function handleGroupDetail(group){
+        navigation.navigate('GroupDetail',{group});
+    }
 
     useEffect(() => {
         loadGroups();
         getStorage();
-    },[token,refresh,groups]);
+    },[token,groups]);
    
     
     return(
@@ -84,7 +80,7 @@ export default function Groups(){
                             </View>
                             <TouchableOpacity 
                                 style={styles.groupBody}
-                                onPress={navigateToDetail}
+                                onPress={()=>{handleGroupDetail(group)}}
                             >
                                 <Text style={styles.property}>Criado por:</Text>
                                 <Text style={styles.value}>{group.criadoPor}</Text>

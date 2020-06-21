@@ -1,4 +1,4 @@
-import React, {Component,useState}from 'react';
+import React, {useState}from 'react';
 import DatePicker from 'react-native-datepicker';
 import {FontAwesome} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
@@ -64,7 +64,7 @@ export default function Register(){
                             maxDate="2050-06-01"
                             confirmBtnText="Ok"
                             cancelBtnText="Cancelar"
-                            value={dataNascimento}
+                            date={dataNascimento}
                             onDateChange={(date) => setDataNascimento(date)}
                             customStyles={{
                                 dateIcon:{
@@ -80,13 +80,16 @@ export default function Register(){
                     </View>
                     
                     <TextInput
+                        keyboardType='email-address'
                         style={styles.input}
                         placeholder='Email'
                         value={email}
                         onChangeText={(text)=>setEmail(text)}
                     ></TextInput>
                     <TextInput
+                        secureTextEntry={true}
                         style={styles.input}
+                        keyboardType='decimal-pad'
                         placeholder='Senha'
                         value={senha}
                         onChangeText={(text)=>setSenha(text)}
