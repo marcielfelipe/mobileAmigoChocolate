@@ -14,13 +14,12 @@ export default StyleSheet.create ({
         paddingTop: Constants.statusBarHeight + 20
     },
     header:{
-        flexDirection:'row',
-        justifyContent:'space-between',
-        alignItems:'center'
+        alignItems: 'center'
     },
     headerText:{
         fontSize:17,
-        color:'#f0f0f0'
+        color:'#002740',
+        marginLeft:'auto'
     },
     headerTextBold:{
         fontWeight:'bold'
@@ -28,15 +27,15 @@ export default StyleSheet.create ({
     title:{
         fontSize:30,
         marginBottom:16,
-        marginTop:30,
-        color:'#002740',
+        marginTop:20,
+        color:'#fff',
         fontWeight:'bold'
     },
     name:{
         fontWeight:'200'
     },
     groupList:{
-        marginTop:30
+        marginTop:10
     },
     group:{
         padding:15,
