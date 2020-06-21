@@ -1,15 +1,41 @@
-import React, {Component}from 'react';
+import React, {useState,Component}from 'react';
 import DatePicker from 'react-native-datepicker';
 import {FontAwesome} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
-import {TextInput,View,Image,Text,TouchableOpacity, _View} from 'react-native';
+import {TextInput,View,Image,Text,TouchableOpacity,AsyncStorage} from 'react-native';
+
+import api from '../../services/api';
 
 import logoImg from '../../assets/logo.png';
 import styles from './styles';
+import { apisAreAvailable } from 'expo';
 
 export default function NewGroup(){
     const navigation = useNavigation();
 
+    const [nome,setNome] = useState('');
+    const [dataSorteio,setDataSorteio] = useState('');
+    const [dataEvento,setDataEvento] = useState('');
+    const [valorMinimo,setValorMinimo] = useState('');
+    const [valorMaximo,setValorMaximo] = useState('');
+
+    const [token,setToken]=useState('');
+
+    const data={
+        nome,
+        dataSorteio,
+        dataEvento,
+        valorMinimo,
+        valorMaximo
+    }
+    getStorage();
+    async function getStorage(){
+        const t= await AsyncStorage.getItem('token');
+        setToken(t);
+    }
+    const auth = { headers: {Authorization: `Bearer ${token}`}};
+
+    //#region  menu
     function navigateToGroups(){
         navigation.navigate('Groups');
     }
@@ -22,6 +48,14 @@ export default function NewGroup(){
     function navigateToLogin(){
         navigation.navigate('Login');
     }
+    //#endregion
+
+    async function handleCreate(){
+        const response = await api.post('grupo',data,auth);
+        console.log(response.data);
+    }
+
+
 
     return(
         <View style={styles.geral}>
@@ -39,6 +73,8 @@ export default function NewGroup(){
                     <TextInput
                         style={styles.input}
                         placeholder='Nome do sorteio'
+                        value={nome}
+                        onChangeText={(text)=>setNome(text)}
                     >
                     </TextInput>
                     <View style={styles.groupInput}>
@@ -52,7 +88,8 @@ export default function NewGroup(){
                             maxDate="2050-06-01"
                             confirmBtnText="Ok"
                             cancelBtnText="Cancelar"
-                            onDateChange={() => {}}
+                            date={dataSorteio}
+                            onDateChange={(date) => {setDataSorteio(date)}}
                             customStyles={{
                                 dateIcon:{
                                     borderColor:'#fff'
@@ -72,7 +109,8 @@ export default function NewGroup(){
                             maxDate="2050-06-01"
                             confirmBtnText="Ok"
                             cancelBtnText="Cancelar"
-                            onDateChange={() => {}}
+                            date={dataEvento}
+                            onDateChange={(date) => {setDataEvento(date)}}
                             customStyles={{
                                 dateIcon:{
                                     borderColor:'#fff'
@@ -87,17 +125,23 @@ export default function NewGroup(){
                     </View>
                     <View style={styles.groupInput}>
                         <TextInput
+                            keyboardType='numeric'
                             style={styles.inputGroup}
                             placeholder='Valor mínimo'
+                            value={valorMinimo}
+                            onChangeText={(text)=>setValorMinimo(text)}
                         ></TextInput>
                         <TextInput
+                            keyboardType='numeric'
                             style={styles.inputGroup}
                             placeholder='Valor máximo'
+                            value={valorMaximo}
+                            onChangeText={(text)=>setValorMaximo(text)}
                         >
                         </TextInput>
                     </View>
 
-                    <TouchableOpacity style={styles.button}>
+                    <TouchableOpacity style={styles.button} onPress={handleCreate}>
                         <Text style={styles.textButton}>
                             Cadastrar
                         </Text>

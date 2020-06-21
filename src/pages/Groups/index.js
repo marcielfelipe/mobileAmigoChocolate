@@ -56,7 +56,7 @@ export default function Groups(){
     useEffect(() => {
         loadGroups();
         getStorage();
-    },[token,refresh]);
+    },[token,refresh,groups]);
    
     
     return(
