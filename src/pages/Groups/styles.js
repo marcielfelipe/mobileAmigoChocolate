@@ -38,21 +38,31 @@ export default StyleSheet.create ({
         marginTop:10
     },
     group:{
-        padding:15,
         borderRadius:5,
         backgroundColor:'#fff',
         marginBottom:10
     },
     headerGroup:{
+        flexDirection:'row',
+        justifyContent:'space-between',
         backgroundColor:'#f2f2f2',
         borderRadius:4,
-        marginBottom:5
     },  
     headerGroupText:{
+        marginLeft:10,
+        padding:5,
         fontSize:20,
         fontWeight:'bold',
         color:'#0076BF',
-        textAlign:'center'
+
+    },
+    deleteIcon:{
+        padding:10,
+        paddingRight:15
+    },
+    groupBody:{
+        paddingLeft:15,
+        paddingTop:5
     },
     property:{
         fontSize:14,

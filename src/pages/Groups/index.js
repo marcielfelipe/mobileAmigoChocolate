@@ -8,8 +8,19 @@ import styles from './styles';
 
 export default function Groups(){
     const [groups,setGroups]=useState([]);
+    const [token,setToken]=useState('');
+    const [nome,setNome]=useState('');
+    const [refresh,setRefresh]=useState(false);
+
     const navigation = useNavigation();
-    const auth = { headers: {Authorization: `Bearer ${AsyncStorage.getItem('token')}`}};
+
+    async function getStorage(){
+        const t= await AsyncStorage.getItem('token');
+        const n= await AsyncStorage.getItem('nome');
+        setNome(n);
+        setToken(t);
+    }
+    const auth = { headers: {Authorization: `Bearer ${token}`}};
     
     function navigateToDetail(){
         navigation.navigate('GroupDetail');
@@ -23,16 +34,30 @@ export default function Groups(){
     function navigateToNewGroup(){
         navigation.navigate('NewGroup');
     }
-    function navigateToLogin(){
+    
+    async function handleLogout(){
+        await AsyncStorage.removeItem('token');
+        await AsyncStorage.removeItem('nome');
+        await AsyncStorage.removeItem('email');
         navigation.navigate('Login');
     }
+
     async function loadGroups(){
         const response = await api.get('gruposusuario',auth);
         setGroups(response.data);
     }
-    useEffect(()=>{
+    async function handleDeleteGroup(id){
+        const response = await api.delete('grupo/'+id,auth);
+        console.log(response.data);
+        setRefresh(!refresh);
+    }
+
+
+    useEffect(() => {
         loadGroups();
-    },[]);
+        getStorage();
+    },[token,refresh]);
+   
     
     return(
         <View style={styles.geral}>
@@ -40,9 +65,9 @@ export default function Groups(){
                 <View style={styles.header}>
                     <Image source={logoImg} />    
                 </View>
-                <Text style={styles.title}>Bem vindo(a) <Text style={styles.name}>{AsyncStorage.getItem('nome')}</Text>!</Text>
+                <Text style={styles.title}>Bem vindo(a) <Text style={styles.name}>{nome}</Text>!</Text>
                 <Text style={styles.headerText}>
-                        Total de <Text style={styles.headerTextBold}>{groups.length} grupos</Text>
+                        Total de <Text style={styles.headerTextBold}>{groups.length} sorteio(s)</Text>
                     </Text>
                 <FlatList
                     style={styles.groupList}
@@ -50,18 +75,24 @@ export default function Groups(){
                     keyExtractor={group=>String(group._id)}
                     showsVerticalScrollIndicator={false}
                     renderItem={({item:group})=>(
-                        <TouchableOpacity 
-                            style={styles.group}
-                            onPress={navigateToDetail}
-                        >
+                        <View style={styles.group}>
                             <View style={styles.headerGroup}>
                                 <Text style={styles.headerGroupText}>{group.nome}</Text>
+                                <TouchableOpacity onPress={()=>{handleDeleteGroup(group._id)}}>
+                                    <FontAwesome style={styles.deleteIcon}name="trash" size={20} color="#D62525"/>
+                                </TouchableOpacity>
                             </View>
-                            <Text style={styles.property}>Criado por:</Text>
-                            <Text style={styles.value}>{group.criadoPor}</Text>
-                            <Text style={styles.property}>Data do sorteio:</Text>
-                            <Text style={styles.value}>{group.dataSorteio}</Text>
-                        </TouchableOpacity>
+                            <TouchableOpacity 
+                                style={styles.groupBody}
+                                onPress={navigateToDetail}
+                            >
+                                <Text style={styles.property}>Criado por:</Text>
+                                <Text style={styles.value}>{group.criadoPor}</Text>
+                                <Text style={styles.property}>Data do sorteio:</Text>
+                                <Text style={styles.value}>{group.dataSorteio}</Text>
+                            </TouchableOpacity>
+
+                        </View>
                     )}
                 />
 
@@ -71,7 +102,7 @@ export default function Groups(){
                 <TouchableOpacity onPress={navigateToGroups}>
                         <FontAwesome name="home" size={35} color="#fff"/>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={navigateToLogin}>
+                    <TouchableOpacity onPress={handleLogout}>
                         <FontAwesome name="sign-out" size={35} color="#fff"/>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={navigateToMyProfyle}>

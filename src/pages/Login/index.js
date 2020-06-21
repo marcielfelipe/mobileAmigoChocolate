@@ -14,38 +14,29 @@ export default function Login(){
     const [email,setEmail] = useState('');
     const [senha,setSenha] = useState('');
 
-    async function handleLogin(e){
-        console.log(email);
-        console.log(senha);
-        const data={
-            email,
-            senha
-        };
-
-        try{
-            console.log('teste');
-            const response = await api.post('login', data);
-            console.log(response.data);
-            await AsyncStorage.setItem('nome',response.data.nome);
-            await AsyncStorage.setItem('token',response.data.token);
-            await AsyncStorage.setItem('email',response.data.email); 
-            const teste= await AsyncStorage.getItem('nome');
-            console.log(teste);
-            navigation.navigate('Groups');
-        }catch{
-            Alert.alert('Erro de conexão','erro');
-        }
-        
-
-        
-    }
-
     function navigateToRegister(){
         navigation.navigate('Register');
     }
     function navigateToGroups(){
         navigation.navigate('Groups');
     }
+    async function handleLogin(){
+        const data={
+            email,
+            senha
+        };
+        try{
+            const response = await api.post('login', data);
+            await AsyncStorage.setItem('nome',response.data.nome);
+            await AsyncStorage.setItem('token',response.data.token);
+            await AsyncStorage.setItem('email',email); 
+            navigateToGroups();
+        }catch{
+            Alert.alert('Erro de conexão','');
+        }
+    }
+
+    
 
     return(
 
@@ -60,6 +51,7 @@ export default function Login(){
             
             <View style={styles.form}>
                 <TextInput
+                    keyboardType='email-address'
                     style={styles.input}
                     placeholder='Email'
                     value={email}
@@ -67,6 +59,9 @@ export default function Login(){
                 >
                 </TextInput>
                 <TextInput
+                    secureTextEntry={true}
+                    type='password'
+                    keyboardType='decimal-pad'
                     style={styles.input}
                     placeholder='Senha'
                     value={senha}
