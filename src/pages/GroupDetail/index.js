@@ -9,19 +9,7 @@ import logoImg from '../../assets/logo.png';
 import styles from './styles';
 
 export default function GroupDetail(){
-    //#region 
-    YellowBox.ignoreWarnings([
-        'VirtualizedLists should never be nested', // TODO: Remove when fixed
-    ])
-
-    function navigateToGroups(){
-        navigation.navigate('Groups');
-    }
-    function navigateToEditGroup(group){
-        navigation.navigate('EditGroup',{group});
-    }
-
-    //#endregion
+   
 
     const navigation = useNavigation();
     const route=useRoute();
@@ -36,9 +24,22 @@ export default function GroupDetail(){
         setToken(t);
         setIdGroup(id);
     }
+     //#region 
+    function navigateToGroups(){
+        navigation.navigate('Groups');
+    }
+    function navigateToEditGroup(group){
+        navigation.navigate('EditGroup',{group});
+    }
+    function navigateToAddParticipant(group){
+        navigation.navigate('AddParticipant',{group});
+    }
+    function navigateToParticipant(group,participant){
+        navigation.navigate('Participant',{group,participant});
+    }
 
 
-
+    //#endregion
 
     return(
         <SafeAreaView style={styles.container}> 
@@ -106,14 +107,14 @@ export default function GroupDetail(){
                         renderItem={({item:participant})=>(
                             <TouchableOpacity 
                                 style={styles.oneParticipant}
-                                onPress={()=>{}}
+                                onPress={()=>{navigateToParticipant(group,participant)}}
                             >
                                 <FontAwesome name="user" size={25} color="#002740"/>
                                 <Text style={styles.oneParticipantText}>{participant.nome}</Text>
                             </TouchableOpacity>
                         )}
                     />
-                        <TouchableOpacity onPress={navigateToGroups}>
+                    <TouchableOpacity onPress={()=>navigateToAddParticipant(group)}>
                         <FontAwesome style={styles.iconAction}name="user-plus" size={30} color="#002740"/>
                     </TouchableOpacity>
 

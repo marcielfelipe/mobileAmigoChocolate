@@ -1,8 +1,8 @@
-import React, {useState}from 'react';
+import React, {useState,useEffect}from 'react';
 import DatePicker from 'react-native-datepicker';
 import {FontAwesome} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
-import {TextInput,View,Image,Text,TouchableOpacity,AsyncStorage} from 'react-native';
+import {TextInput,View,Image,Text,TouchableOpacity,AsyncStorage, Alert} from 'react-native';
 
 import api from '../../services/api';
 
@@ -49,12 +49,17 @@ export default function NewGroup(){
     }
     //#endregion
 
-    async function handleCreate(){
-        const response = await api.post('grupo',data,auth);
-        set
+    
+    async function create(){
+        try{
+            const response = await api.post('grupo',data,auth);
+            Alert.alert(response.data.msg);
+        }catch{
+            Alert.alert('erro','');
+        }
+        navigation.navigate('Groups');
+        
     }
-
-
 
     return(
         <View style={styles.geral}>
@@ -82,9 +87,9 @@ export default function NewGroup(){
                             showIcon={false}
                             mode="date"
                             placeholder="Data do sorteio"
-                            format="DD/MM/YYYY"
+                            format="YYYY-MM-DD"
                             minDate={new Date}
-                            maxDate="01-06-2050"
+                            maxDate="2050-06-01"
                             confirmBtnText="Ok"
                             cancelBtnText="Cancelar"
                             date={dataSorteio}
@@ -103,9 +108,9 @@ export default function NewGroup(){
                             showIcon={false}
                             mode="date"
                             placeholder="Data do evento"
-                            format="DD/MM/YYYY"
+                            format="YYYY-MM-DD"
                             minDate={dataSorteio}
-                            maxDate="01-06-2050"
+                            maxDate="2050-06-01"
                             confirmBtnText="Ok"
                             cancelBtnText="Cancelar"
                             date={dataEvento}
@@ -140,34 +145,20 @@ export default function NewGroup(){
                         </TextInput>
                     </View>
 
-                    <TouchableOpacity style={styles.button} onPress={handleCreate}>
+                    <TouchableOpacity style={styles.button} onPress={create}>
                         <Text style={styles.textButton}>
                             Cadastrar
                         </Text>
                     </TouchableOpacity>
-                    
+                    <TouchableOpacity style={styles.button2} onPress={navigateToGroups}>
+                        <Text style={styles.textButton2}>Cancelar</Text>
+                    </TouchableOpacity>
 
                 </View>
 
 
             </View>
 
-            <View style={styles.menuBar}>
-                <View style={styles.iconsMenu}>
-                <TouchableOpacity onPress={navigateToGroups}>
-                        <FontAwesome name="home" size={35} color="#fff"/>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={navigateToLogin}>
-                        <FontAwesome name="sign-out" size={35} color="#fff"/>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={navigateToMyProfyle}>
-                        <FontAwesome name="user-circle" size={35} color="#fff"/>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={navigateToNewGroup}>
-                        <FontAwesome name="plus-circle" size={35} color="#fff"/>
-                    </TouchableOpacity>
-                </View>
-            </View>
 
         </View>
     );

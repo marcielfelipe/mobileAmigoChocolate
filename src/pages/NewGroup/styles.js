@@ -58,6 +58,17 @@ export default StyleSheet.create ({
         marginTop:1,
         fontSize:25
     },
+    button2:{
+        marginTop:10,
+        borderWidth:1,
+        borderColor:'#002740'
+    },  
+    textButton2:{
+        textAlign:'center',
+        color:'#002740',
+        fontSize:25,
+        marginBottom:3
+    },
 
 
 

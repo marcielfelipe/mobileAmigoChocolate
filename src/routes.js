@@ -11,6 +11,8 @@ import MyProfile from './pages/MyProfile';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import EditGroup from './pages/EditGroup';
+import AddParticipant from './pages/AddParticipant';
+import Participant from './pages/Participant';
 
 
 
@@ -25,7 +27,8 @@ export default function Routes(){
                 <AppStack.Screen name = "MyProfile"component={MyProfile}/>
                 <AppStack.Screen name = "Register"component={Register}/>
                 <AppStack.Screen name = "EditGroup"component={EditGroup}/>
-                
+                <AppStack.Screen name = "AddParticipant"component={AddParticipant}/>
+                <AppStack.Screen name = "Participant"component={Participant}/>
             </AppStack.Navigator>
         </NavigationContainer>
     );

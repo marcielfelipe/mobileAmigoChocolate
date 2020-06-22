@@ -16,8 +16,12 @@ export default StyleSheet.create ({
     header:{
         alignItems:'center'
     },
+    iconUser:{
+        marginTop:30,
+    },  
     headerText:{
-        marginTop:40,
+        color:'#002740',
+        marginTop:5,
         fontWeight:'bold',
         fontSize:25
     },
@@ -26,7 +30,8 @@ export default StyleSheet.create ({
         marginTop:20
     },  
     input:{
-        marginTop:15,
+        width:310,
+        marginTop:5,
         backgroundColor:'#fff',
         height:40,
         fontSize:20,
@@ -68,6 +73,11 @@ export default StyleSheet.create ({
         color:'#002740',
         fontSize:25,
         marginBottom:3
+    },  
+    property:{
+        color:'#002740',
+        marginTop:10,
+        fontSize:15
     },
 
 

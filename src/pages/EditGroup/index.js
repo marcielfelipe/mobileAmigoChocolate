@@ -77,9 +77,9 @@ export default function EditGroup(){
                             showIcon={false}
                             mode="date"
                             placeholder="Data do sorteio"
-                            format="DD/MM/YYYY"
+                            format="YYYY-MM-DD"
                             minDate={new Date}
-                            maxDate="01-06-2050"
+                            maxDate="2050-06-01"
                             confirmBtnText="Ok"
                             cancelBtnText="Cancelar"
                             date={dataSorteio}
@@ -98,8 +98,8 @@ export default function EditGroup(){
                             showIcon={false}
                             mode="date"
                             placeholder="Data do evento"
-                            format="DD/MM/YYYY"
-                            minDate="1900-01-01"
+                            format="YYYY-MM-DD"
+                            minDate={new Date}
                             maxDate="2050-06-01"
                             confirmBtnText="Ok"
                             cancelBtnText="Cancelar"

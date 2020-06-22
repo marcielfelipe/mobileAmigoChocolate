@@ -1,7 +1,7 @@
 import React,{useState,useEffect} from 'react';
 import {FontAwesome} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
-import {View, FlatList,Image,Text,TouchableOpacity,AsyncStorage,Storage} from 'react-native';
+import {View, FlatList,Image,Text,TouchableOpacity,AsyncStorage,Alert} from 'react-native';
 import api from '../../services/api';
 ;import logoImg from '../../assets/logo.png';
 import styles from './styles';
@@ -10,6 +10,7 @@ export default function Groups(){
     const [groups,setGroups]=useState([]);
     const [token,setToken]=useState('');
     const [nome,setNome]=useState('');
+    const [apagar,setApagar] = useState(false)
 
     const navigation = useNavigation();
 
@@ -18,7 +19,6 @@ export default function Groups(){
         const n= await AsyncStorage.getItem('nome');
         setNome(n);
         setToken(t);
-        return t;
     }
     const auth = { headers: {Authorization: `Bearer ${token}`}};
     function navigateToGroups(){
@@ -42,8 +42,29 @@ export default function Groups(){
         const response = await api.get('gruposusuario',auth);
         setGroups(response.data);
     }
-    async function handleDeleteGroup(id){
-        const response = await api.delete('grupo/'+id,auth);
+    async function handleDeleteGroup(group){
+        
+        Alert.alert(
+            `Apagar o Grupo ${group.nome}`,
+            [
+              {
+                text: 'Sim',
+                onPress: () => setApagar(true)
+              },
+              {
+                text: 'Não',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel'
+              }
+            ],
+            { cancelable: false }
+          );
+
+        if(apagar){
+            setApagar(false);
+            const response = await api.delete('grupo/'+group._id,auth);
+        }
+         
     }
     async function handleGroupDetail(group){
         navigation.navigate('GroupDetail',{group});
@@ -74,7 +95,7 @@ export default function Groups(){
                         <View style={styles.group}>
                             <View style={styles.headerGroup}>
                                 <Text style={styles.headerGroupText}>{group.nome}</Text>
-                                <TouchableOpacity onPress={()=>{handleDeleteGroup(group._id)}}>
+                                <TouchableOpacity onPress={()=>{handleDeleteGroup(group)}}>
                                     <FontAwesome style={styles.deleteIcon}name="trash" size={20} color="#D62525"/>
                                 </TouchableOpacity>
                             </View>

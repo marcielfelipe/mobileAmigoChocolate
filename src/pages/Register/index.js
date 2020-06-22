@@ -59,8 +59,8 @@ export default function Register(){
                             style={styles.input}
                             showIcon={false}
                             mode="date"
-                            format="DD/MM/YYYY"
-                            minDate="01-01-1910"
+                            format="YYYY-MM-DD"
+                            minDate="1910-01-10"
                             maxDate={new Date}
                             confirmBtnText="Ok"
                             cancelBtnText="Cancelar"
