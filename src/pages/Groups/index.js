@@ -3,7 +3,7 @@ import {FontAwesome} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
 import {View, FlatList,Image,Text,TouchableOpacity,AsyncStorage,Alert} from 'react-native';
 import api from '../../services/api';
-;import logoImg from '../../assets/logo.png';
+import logoImg from '../../assets/logo.png';
 import styles from './styles';
 
 export default function Groups(){
@@ -13,7 +13,6 @@ export default function Groups(){
     const [apagar,setApagar] = useState(false)
 
     const navigation = useNavigation();
-
     async function getStorage(){
         const t= await AsyncStorage.getItem('token');
         const n= await AsyncStorage.getItem('nome');
@@ -67,8 +66,11 @@ export default function Groups(){
          
     }
     async function handleGroupDetail(group){
-        navigation.navigate('GroupDetail',{group});
+        const id = group._id;
+        const participants = group.participantes;
+        navigation.navigate('GroupDetail',{group,id,participants});
     }
+
 
     useEffect(() => {
         loadGroups();

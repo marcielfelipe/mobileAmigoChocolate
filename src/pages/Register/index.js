@@ -2,7 +2,7 @@ import React, {useState}from 'react';
 import DatePicker from 'react-native-datepicker';
 import {FontAwesome} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
-import {TextInput,View,Image,Text,TouchableOpacity, _View} from 'react-native';
+import {TextInput,View,Image,Text,TouchableOpacity, _View, Alert} from 'react-native';
 import logoImg from '../../assets/logo.png';
 import styles from './styles';
 import api from '../../services/api';
@@ -25,7 +25,7 @@ export default function Register(){
     
     async function handleRegister(){
         const response = await api.post('usuario',data);
-        console.log(response.data);
+        Alert.alert(response.data.msg,'Faça login.');
         navigateToLogin();
     }
 

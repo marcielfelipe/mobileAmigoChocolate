@@ -3,27 +3,32 @@ import {FontAwesome} from '@expo/vector-icons';
 import {useNavigation,useRoute} from '@react-navigation/native';
 import {ScrollView,View, FlatList,Image,Text,TouchableOpacity,SafeAreaView,AsyncStorage} from 'react-native';
 import { YellowBox } from 'react-native'
-
+import api from '../../services/api';
 
 import logoImg from '../../assets/logo.png';
 import styles from './styles';
 
 export default function GroupDetail(){
-   
-
     const navigation = useNavigation();
     const route=useRoute();
     const [token,setToken]=useState('');
     const group = route.params.group;
-    const [idGroup,setIdGroup] = useState('');
+    const [idGroup,setIdGroup] = useState(route.params.id);
+    const [amigo,setAmigo]=useState('');
+    const [email,setEmail]=useState('');
+    const [participants,setParticipants]=useState(group.participantes);
+
+
 
     getStorage();
     async function getStorage(){
-        const id=await AsyncStorage.getItem('idGroup');
         const t= await AsyncStorage.getItem('token');
+        const e = await AsyncStorage.getItem('email');
         setToken(t);
-        setIdGroup(id);
+        setEmail(e);
     }
+    const auth = { headers: {Authorization: `Bearer ${token}`}};
+    
      //#region 
     function navigateToGroups(){
         navigation.navigate('Groups');
@@ -37,6 +42,22 @@ export default function GroupDetail(){
     function navigateToParticipant(group,participant){
         navigation.navigate('Participant',{group,participant});
     }
+    function atribuirAmigo(){
+        participants.map(participant=>{
+            if(participant.email==email){
+                setAmigo(participant.amigo);
+            }
+        })
+    }
+    
+    async function handleSorteio(){
+        const responseSorteio = api.get('grupo/sorteio/'+idGroup,auth);
+        atribuirAmigo();
+        
+    }
+    
+
+    
 
 
     //#endregion
@@ -65,8 +86,9 @@ export default function GroupDetail(){
                     
                     <Text style={styles.property}>Status:</Text>
                     <Text style={styles.value}>{group.status}</Text>
+                    <Text style={styles.value}>{amigo}</Text>
 
-                    <TouchableOpacity onPress={navigateToGroups}>
+                    <TouchableOpacity onPress={()=>{handleSorteio()}}>
                         <FontAwesome style={styles.iconAction}name="random" size={30} color="#002740"/>
                     </TouchableOpacity>
 
