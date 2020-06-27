@@ -11,8 +11,8 @@ export default function Groups(){
     const [token,setToken]=useState('');
     const [nome,setNome]=useState('');
     const [apagar,setApagar] = useState(false)
-
     const navigation = useNavigation();
+
     async function getStorage(){
         const t= await AsyncStorage.getItem('token');
         const n= await AsyncStorage.getItem('nome');
@@ -20,6 +20,7 @@ export default function Groups(){
         setToken(t);
     }
     const auth = { headers: {Authorization: `Bearer ${token}`}};
+
     function navigateToGroups(){
         navigation.navigate('Groups');
     }
@@ -42,36 +43,15 @@ export default function Groups(){
         setGroups(response.data);
     }
     async function handleDeleteGroup(group){
-        
-        Alert.alert(
-            `Apagar o Grupo ${group.nome}`,
-            [
-              {
-                text: 'Sim',
-                onPress: () => setApagar(true)
-              },
-              {
-                text: 'Não',
-                onPress: () => console.log('Cancel Pressed'),
-                style: 'cancel'
-              }
-            ],
-            { cancelable: false }
-          );
-
-        if(apagar){
-            setApagar(false);
-            const response = await api.delete('grupo/'+group._id,auth);
-        }
-         
+        setApagar(false);
+        const response = await api.delete('grupo/'+group._id,auth);
+        Alert.alert(response.data.msg);
     }
     async function handleGroupDetail(group){
         const id = group._id;
         const participants = group.participantes;
         navigation.navigate('GroupDetail',{group,id,participants});
     }
-
-
     useEffect(() => {
         loadGroups();
         getStorage();

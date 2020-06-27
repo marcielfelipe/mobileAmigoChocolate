@@ -1,8 +1,8 @@
 import React,{useState,useEffect} from 'react';
 import {FontAwesome} from '@expo/vector-icons';
 import {useNavigation,useRoute} from '@react-navigation/native';
-import {ScrollView,View, FlatList,Image,Text,TouchableOpacity,SafeAreaView,AsyncStorage} from 'react-native';
-import { YellowBox } from 'react-native'
+import {ScrollView,View, FlatList,Image,Text,TouchableOpacity,SafeAreaView,AsyncStorage, Alert} from 'react-native';
+
 import api from '../../services/api';
 
 import logoImg from '../../assets/logo.png';
@@ -12,15 +12,13 @@ export default function GroupDetail(){
     const navigation = useNavigation();
     const route=useRoute();
     const [token,setToken]=useState('');
-    const group = route.params.group;
     const [idGroup,setIdGroup] = useState(route.params.id);
     const [amigo,setAmigo]=useState('');
     const [email,setEmail]=useState('');
-    const [participants,setParticipants]=useState(group.participantes);
+    const [group,setGroup]=useState([]);
+    const [participants,setParticipants]=useState([]);
+    const [mostrarAmigo,setMostrarAmigo]=useState(false);
 
-
-
-    getStorage();
     async function getStorage(){
         const t= await AsyncStorage.getItem('token');
         const e = await AsyncStorage.getItem('email');
@@ -28,8 +26,13 @@ export default function GroupDetail(){
         setEmail(e);
     }
     const auth = { headers: {Authorization: `Bearer ${token}`}};
-    
-     //#region 
+
+    async function loadGroup(){
+        const response = await api.get('grupo/'+idGroup,auth);
+        setGroup(response.data);
+        setParticipants(group.participantes);
+    }
+    //#region ROTAS
     function navigateToGroups(){
         navigation.navigate('Groups');
     }
@@ -37,30 +40,50 @@ export default function GroupDetail(){
         navigation.navigate('EditGroup',{group});
     }
     function navigateToAddParticipant(group){
-        navigation.navigate('AddParticipant',{group});
+        if(group.status=='Em Aberto'){
+            navigation.navigate('AddParticipant',{group});
+        }
+        else{
+            Alert.alert('Ops :(','O sorteio já foi realizado. Cancele o sorteio para adicionar mais participantes.')
+        }
+        
     }
     function navigateToParticipant(group,participant){
         navigation.navigate('Participant',{group,participant});
     }
+    //#endregion
+    
     function atribuirAmigo(){
+        console.log(email);
         participants.map(participant=>{
             if(participant.email==email){
                 setAmigo(participant.amigo);
             }
         })
+        console.log(amigo);
     }
-    
+   
     async function handleSorteio(){
-        const responseSorteio = api.get('grupo/sorteio/'+idGroup,auth);
-        atribuirAmigo();
-        
+        const responseSorteio = await api.get('grupo/sorteio/'+idGroup,auth);
+        Alert.alert(responseSorteio.data.msg);
+        atribuirAmigo();  
     }
-    
 
-    
+    async function handleDeleteSorteio(){
+        console.log(group._id);
+        const res = await api.put('grupo/sorteio/'+group._id,auth);
+        console.log(res);
 
+    }
+    function verAmigo(){
+        console.log(amigo);
+        setMostrarAmigo(!mostrarAmigo);
+    }
 
-    //#endregion
+    useEffect(() => {
+        loadGroup();
+        getStorage();
+    },[token,group]);
 
     return(
         <SafeAreaView style={styles.container}> 
@@ -83,15 +106,42 @@ export default function GroupDetail(){
                     <View style={styles.headerCard}>
                         <Text style={styles.headerCardText}>Sorteio</Text>
                     </View>
+                    {
+                        group.status=='Em Aberto' && 
+                            <View>
+                                <Text style={styles.property}>Status:</Text>
+                                <Text style={styles.value}>{group.status}</Text>
+                            </View>
+                    }{
+                        group.status=='Sorteado' && 
+                            <View>
+                                <Text style={styles.property}>Status:</Text>
+                                <Text style={styles.value}>{group.status}</Text>
+                                <Text style={styles.property}>Amigo:</Text>
+                                {
+                                    mostrarAmigo && <Text style={styles.value}>{amigo}</Text>
+                                }{
+                                    !mostrarAmigo && <Text></Text>
+                                }
+                                
+                                <TouchableOpacity onPress={()=>{verAmigo()}}>
+                                    <FontAwesome style={styles.iconAction}name="eye" size={30} color="#002740"/>
+                                </TouchableOpacity>
+                            </View>
+                    }
                     
-                    <Text style={styles.property}>Status:</Text>
-                    <Text style={styles.value}>{group.status}</Text>
-                    <Text style={styles.value}>{amigo}</Text>
-
-                    <TouchableOpacity onPress={()=>{handleSorteio()}}>
-                        <FontAwesome style={styles.iconAction}name="random" size={30} color="#002740"/>
-                    </TouchableOpacity>
-
+                    {
+                        group.status=='Em Aberto' && 
+                            <TouchableOpacity onPress={()=>{handleSorteio()}}>
+                                <FontAwesome style={styles.iconAction}name="random" size={30} color="#002740"/>
+                            </TouchableOpacity>
+                    }{
+                        group.status=='Sorteado' && 
+                            <TouchableOpacity onPress={()=>{handleDeleteSorteio()}}>
+                                <FontAwesome style={styles.iconAction}name="undo" size={30} color="#002740"/>
+                            </TouchableOpacity>
+                    }
+                   
                     
                 </View>
 

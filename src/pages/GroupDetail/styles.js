@@ -58,7 +58,6 @@ export default StyleSheet.create({
         marginLeft: 'auto'
     },
 
-
     oneParticipant:{
         flexDirection:'row',
         alignItems:'center'
