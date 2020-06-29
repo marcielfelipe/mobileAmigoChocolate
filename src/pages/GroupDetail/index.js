@@ -1,7 +1,7 @@
 import React,{useState,useEffect} from 'react';
 import {FontAwesome} from '@expo/vector-icons';
 import {useNavigation,useRoute} from '@react-navigation/native';
-import {ScrollView,View, FlatList,Image,Text,TouchableOpacity,SafeAreaView,AsyncStorage, Alert} from 'react-native';
+import {ScrollView,View, FlatList,Image,Text,TouchableOpacity,SafeAreaView,AsyncStorage, Alert,TextInput} from 'react-native';
 
 import api from '../../services/api';
 
@@ -15,8 +15,10 @@ export default function GroupDetail(){
     const [idGroup,setIdGroup] = useState(route.params.id);
     const [amigo,setAmigo]=useState('');
     const [email,setEmail]=useState('');
+    const [desejo,setDesejo]=useState('');
     const [group,setGroup]=useState([]);
     const [participants,setParticipants]=useState([]);
+    const [listaDesejos,setListaDesejos]=useState([]);
     const [mostrarAmigo,setMostrarAmigo]=useState(false);
 
     async function getStorage(){
@@ -31,6 +33,7 @@ export default function GroupDetail(){
         const response = await api.get('grupo/'+idGroup,auth);
         setGroup(response.data);
         setParticipants(group.participantes);
+        atribuirLista();
     }
     //#region ROTAS
     function navigateToGroups(){
@@ -60,8 +63,31 @@ export default function GroupDetail(){
                 setAmigo(element.amigo);
             }
         }
-        console.log(amigo);
-        
+    }
+    function atribuirLista(){
+        for (let index = 0; index < participants.length; index++) {
+            const element = participants[index];
+            if(element.email==email){
+                setListaDesejos(element.listaDesejos);
+            }
+        }
+    }
+    async function addItemLista(){
+        const dataAdd={
+            _id:idGroup,
+            desejo
+        }
+        const res = await api.put('grupo/addlista/',dataAdd,auth);
+        Alert.alert(res.data.msg);
+        setDesejo('');
+    }
+    async function deleteItemLista(idDesejo){
+        const dataDel={
+            _id:idGroup,
+            idDesejo
+        }
+        const res = await api.put('grupo/deletelista/',dataDel,auth);
+        Alert.alert(res.data.msg);
     }
    
     async function handleSorteio(){
@@ -195,6 +221,45 @@ export default function GroupDetail(){
                     <TouchableOpacity onPress={()=>navigateToAddParticipant(group)}>
                         <FontAwesome style={styles.iconAction}name="user-plus" size={30} color="#002740"/>
                     </TouchableOpacity>
+
+                </View>   
+                <View style={styles.card}>
+
+                <View style={styles.headerCard}>
+                    <Text style={styles.headerCardText}>Lista de Desejos</Text>
+                </View>
+
+                <FlatList
+                    style={styles.participantList}
+                    data={listaDesejos}
+                    keyExtractor={desejo=>String(desejo._id)}
+                    showsVerticalScrollIndicator={false}
+                    renderItem={({item})=>(
+                        <View style={styles.itemLIsta}>
+                            <Text style={styles.oneParticipantText}>{item.desejo}</Text>
+                            <TouchableOpacity 
+                            style={styles.oneParticipant}
+                            onPress={()=>{deleteItemLista(item._id)}}
+                            >
+                                <FontAwesome name="trash" size={22} color="#D62525"/>
+                            </TouchableOpacity>
+                        </View>  
+                        
+                    )}
+                />
+                <View style={styles.containerInputItem}>
+                    <TextInput
+                        style={styles.inputItem}
+                        placeholder='Desejo'
+                        value={desejo}
+                        onChangeText={(text)=> setDesejo(text)}
+                    >
+                    </TextInput>
+                    <TouchableOpacity onPress={addItemLista}>
+                        <FontAwesome style={styles.iconAction}name="plus" size={30} color="#002740"/>
+                    </TouchableOpacity>
+                </View>
+                
 
                 </View>   
 

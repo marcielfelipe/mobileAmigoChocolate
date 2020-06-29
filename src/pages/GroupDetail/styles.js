@@ -65,6 +65,23 @@ export default StyleSheet.create({
     oneParticipantText:{
         marginLeft:8,
     },
-
+    itemLIsta:{
+        flexDirection:'row',
+        justifyContent:'space-between',
+        marginBottom:8,
+        borderBottomWidth:1,
+        borderColor:'#f2f2f2'
+    },
+    containerInputItem:{
+        marginTop:15,
+        flexDirection:'row',
+        justifyContent:'space-between'
+    },
+    inputItem:{
+        borderBottomWidth:1,
+        width:260,
+        marginRight:10,
+        marginLeft:5,
+    }
     
 });
