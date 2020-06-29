@@ -22,9 +22,6 @@ export default function Participant(){
     function navigateToGroupDetail(){
         navigation.navigate('GroupDetail');
     }
-    function navigateToGroups(){
-        navigation.navigate('Groups');
-    }
     
 //#endregion
     async function getStorage(){
@@ -43,7 +40,7 @@ export default function Participant(){
     async function handleDelete(){
         const response = await api.post('grupo/participante',data,auth);
         Alert.alert(response.data.msg);
-        navigateToGroups();
+        navigateToGroupDetail();
     }
 
     useEffect(() => {

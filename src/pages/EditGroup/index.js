@@ -46,7 +46,7 @@ export default function EditGroup(){
 
     async function handleEdit(){
         const response = await api.put('grupo',data,auth);
-        navigation.navigate('Groups');
+        navigateToGroupDetail();
     }
 
 

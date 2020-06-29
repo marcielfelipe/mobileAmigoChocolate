@@ -52,32 +52,29 @@ export default function GroupDetail(){
         navigation.navigate('Participant',{group,participant});
     }
     //#endregion
-    
     function atribuirAmigo(){
-        console.log(email);
-        participants.map(participant=>{
-            if(participant.email==email){
-                setAmigo(participant.amigo);
+        setMostrarAmigo(!mostrarAmigo);
+        for (let index = 0; index < participants.length; index++) {
+            const element = participants[index];
+            if(element.email==email){
+                setAmigo(element.amigo);
             }
-        })
+        }
         console.log(amigo);
+        
     }
    
     async function handleSorteio(){
         const responseSorteio = await api.get('grupo/sorteio/'+idGroup,auth);
         Alert.alert(responseSorteio.data.msg);
-        atribuirAmigo();  
     }
 
     async function handleDeleteSorteio(){
-        console.log(group._id);
-        const res = await api.put('grupo/sorteio/'+group._id,auth);
-        console.log(res);
-
-    }
-    function verAmigo(){
-        console.log(amigo);
-        setMostrarAmigo(!mostrarAmigo);
+        const data={
+            _id:idGroup
+        }
+        const res = await api.put('grupo/sorteio',data,auth);
+        Alert.alert(res.data.msg);
     }
 
     useEffect(() => {
@@ -119,14 +116,23 @@ export default function GroupDetail(){
                                 <Text style={styles.value}>{group.status}</Text>
                                 <Text style={styles.property}>Amigo:</Text>
                                 {
-                                    mostrarAmigo && <Text style={styles.value}>{amigo}</Text>
+                                    mostrarAmigo &&<Text>{amigo}</Text>
                                 }{
                                     !mostrarAmigo && <Text></Text>
                                 }
+                                {
+                                    !mostrarAmigo &&  
+                                    <TouchableOpacity onPress={()=>atribuirAmigo()}>
+                                        <FontAwesome style={styles.iconAction}name="eye" size={30} color="#002740"/>
+                                    </TouchableOpacity>
+                                }{
+                                    mostrarAmigo &&  
+                                    <TouchableOpacity onPress={()=>setMostrarAmigo(!mostrarAmigo)}>
+                                        <FontAwesome style={styles.iconAction}name="eye-slash" size={30} color="#002740"/>
+                                    </TouchableOpacity>
+                                }
                                 
-                                <TouchableOpacity onPress={()=>{verAmigo()}}>
-                                    <FontAwesome style={styles.iconAction}name="eye" size={30} color="#002740"/>
-                                </TouchableOpacity>
+                               
                             </View>
                     }
                     

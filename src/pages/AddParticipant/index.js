@@ -22,8 +22,8 @@ export default function AddParticipant(){
     const auth = { headers: {Authorization: `Bearer ${token}`}};    
 
 
-    function navigateToGroups(){
-        navigation.navigate('Groups');
+    function navigateToGroupDetail(){
+        navigation.navigate('GroupDetail');
     }
     async function handleAdd(){
         const data={
@@ -33,7 +33,7 @@ export default function AddParticipant(){
         try{
             const response = await api.put('grupo/participante', data,auth);
             Alert.alert(response.data.msg);
-            navigateToGroups();
+            navigateToGroupDetail();
         }catch{
             Alert.alert('Erro de conexão','');
         }
