@@ -10,14 +10,18 @@ export default function Groups(){
     const [groups,setGroups]=useState([]);
     const [token,setToken]=useState('');
     const [nome,setNome]=useState('');
+    const [email,setEmail]=useState('');
     const [apagar,setApagar] = useState(false)
     const navigation = useNavigation();
+    const [admin,setAdmin]=useState(false);
 
     async function getStorage(){
         const t= await AsyncStorage.getItem('token');
         const n= await AsyncStorage.getItem('nome');
+        const e= await AsyncStorage.getItem('email');
         setNome(n);
         setToken(t);
+        setEmail(e);
     }
     const auth = { headers: {Authorization: `Bearer ${token}`}};
 
@@ -42,12 +46,20 @@ export default function Groups(){
         const response = await api.get('gruposusuario',auth);
         setGroups(response.data);
     }
+    function verificaAdmin(group){
+        if(group.admin==email){
+            handleDeleteGroup(group);
+        }else{
+            Alert.alert('Ops :(','Você não tem permissão para deletar este grupo.');
+        }
+    }
     async function handleDeleteGroup(group){
         setApagar(false);
         const response = await api.delete('grupo/'+group._id,auth);
-        Alert.alert(response.data.msg);
+        Alert.alert(response.data.msg);   
     }
     async function handleGroupDetail(group){
+        console.log(email);
         const id = group._id;
         const participants = group.participantes;
         navigation.navigate('GroupDetail',{group,id,participants});
@@ -77,7 +89,7 @@ export default function Groups(){
                         <View style={styles.group}>
                             <View style={styles.headerGroup}>
                                 <Text style={styles.headerGroupText}>{group.nome}</Text>
-                                <TouchableOpacity onPress={()=>{handleDeleteGroup(group)}}>
+                                <TouchableOpacity onPress={()=>{verificaAdmin(group)}}>
                                     <FontAwesome style={styles.deleteIcon}name="trash" size={20} color="#D62525"/>
                                 </TouchableOpacity>
                             </View>

@@ -20,6 +20,7 @@ export default function GroupDetail(){
     const [participants,setParticipants]=useState([]);
     const [listaDesejos,setListaDesejos]=useState([]);
     const [mostrarAmigo,setMostrarAmigo]=useState(false);
+    const [admin,setAdmin]=useState(false);
 
     async function getStorage(){
         const t= await AsyncStorage.getItem('token');
