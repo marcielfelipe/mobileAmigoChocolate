@@ -1,11 +1,9 @@
 {
   "expo": {
     "name": "Amigo Chocolate",
-    "slug": "mobileAmigoChocolate",
+    "slug": "AmigoChocolate",
     "platforms": [
-      "ios",
-      "android",
-      "web"
+      "android"
     ],
     "version": "1.0.0",
     "orientation": "portrait",
@@ -22,7 +20,11 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier":"com.mfdev.amigochocolate"
+    },
+    "android":{
+      "package":"com.mfdev.amigochocolate"
     }
   }
 }
